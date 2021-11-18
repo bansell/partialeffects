@@ -40,7 +40,7 @@ library(partialeffects)
 ```
 
 ``` r
-experimental_data
+systolic_trial
 ```
 
     ## # A tibble: 200 × 6
@@ -59,21 +59,21 @@ experimental_data
     ## # … with 190 more rows
 
 ``` r
-skim(experimental_data)
+skim(systolic_trial)
 ```
 
-|                                                  |                    |
-|:-------------------------------------------------|:-------------------|
-| Name                                             | experimental\_data |
-| Number of rows                                   | 200                |
-| Number of columns                                | 6                  |
-| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_   |                    |
-| Column type frequency:                           |                    |
-| character                                        | 1                  |
-| factor                                           | 3                  |
-| numeric                                          | 2                  |
-| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ |                    |
-| Group variables                                  | None               |
+|                                                  |                 |
+|:-------------------------------------------------|:----------------|
+| Name                                             | systolic\_trial |
+| Number of rows                                   | 200             |
+| Number of columns                                | 6               |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_   |                 |
+| Column type frequency:                           |                 |
+| character                                        | 1               |
+| factor                                           | 3               |
+| numeric                                          | 2               |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ |                 |
+| Group variables                                  | None            |
 
 Data summary
 
@@ -108,7 +108,7 @@ excellent (and free)
 [moderndive](https://moderndive.com/5-regression.html) book.)
 
 ``` r
-mod <- lm(systolic ~ treatment, data = experimental_data)
+mod <- lm(systolic ~ treatment, data = systolic_trial)
 ```
 
 Using the moderndive package, we can call the `get_regression_table()`
@@ -158,7 +158,7 @@ name suggests.
 
 ``` r
 mod_multi <- lm(systolic ~ treatment + age + site + machine, 
-                data = experimental_data)
+                data = systolic_trial)
 
 get_regression_table(mod_multi)
 ```
@@ -217,7 +217,7 @@ NBB scaling is tricky to implement in tidy R. A wrapper function
 you are using this often.
 
 ``` r
-experimental_data_scaled <- experimental_data %>% 
+systolic_trial_scaled <- systolic_trial %>% 
   mutate(age = (age-mean(age)) / sd(age)) %>% 
   print()
 ```
@@ -241,7 +241,7 @@ Now we create a lm using the scaled covariate:
 
 ``` r
 mod_scaled <- lm(systolic ~ treatment + age + site + machine,
-                 data = experimental_data_scaled)
+                 data = systolic_trial_scaled)
 
 get_regression_table(mod_scaled)
 ```
@@ -279,13 +279,13 @@ We see in the multivariate model that the treatment is effective. Can we
 plot this result?
 
 ``` r
-ggplot(experimental_data_scaled, aes(x=treatment, y=systolic, col=treatment)) + 
+ggplot(systolic_trial_scaled, aes(x=treatment, y=systolic, col=treatment)) + 
   geom_boxplot() +
   ggpubr::stat_compare_means(ref.group = 'placebo', method = 't.test', col='red') +
   geom_jitter(height=0,width=0.15)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 The above plot doesnt fit the above reported p value for the drug
 treatment (p ≈ 0). As a general rule, any box plot where the upper and
@@ -319,7 +319,7 @@ measured value for patient *x* for the second term, and so on to the
 If we apply this to Patient 1 in the scaled experimental data:
 
 ``` r
-experimental_data_scaled %>% head()
+systolic_trial_scaled %>% head()
 ```
 
     ## # A tibble: 6 × 6
@@ -412,9 +412,9 @@ pre-calculated error, for every patient in the study.
 modelled on `moderndive::get_regression_points()` but further calculates
 partial residuals (`partial_resid`) for effects of interest.
 
-The entire `experimental_data_scaled` data is captured by the
-`mod_scaled` object created above. Therefore this function needs only a
-model object and the column name of the effect of interest:
+The entire `systolic_trial_scaled` data is captured by the `mod_scaled`
+object created above. Therefore this function needs only a model object
+and the column name of the effect of interest:
 
 ``` r
 partial_treatment <- extract_partial(mod_scaled, 'treatment') 
@@ -446,7 +446,7 @@ ggplot(partial_treatment, aes(x=treatment, y=partial_resid, col=treatment)) +
   ylab('corrected systolic')
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 **Now the summary statistics table, the plot and the displayed p value
 are all in agreement!**

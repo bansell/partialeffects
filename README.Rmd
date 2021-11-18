@@ -22,10 +22,17 @@ Let's first load the required packages and check the experimental data
 
 ```{r,eval=F,message=F}
 devtools::install_github("bansell/partialeffects")
+
 ```
 
+```{r,echo=F,message=F}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+devtools::load_all()
+```
 
-```{r,message=F,error=F}
+```{r,message=F,error=F,eval=F}
 library(tidyverse)
 library(moderndive)
 library(skimr)
