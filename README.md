@@ -301,10 +301,10 @@ in [moderndive chapter 5](https://moderndive.com/5-regression.html), the
 average blood pressure for patients in each treatment/site/machine
 group, is calculated by linear equation
 
-*y* = *β*<sub>0</sub> + *β*<sub>1</sub> ⋅ *x*<sub>1</sub> + *β*<sub>2</sub> ⋅ *x*<sub>2</sub>... + *β*<sub>*n*</sub> ⋅ *x*<sub>*n*</sub>
+*ŷ* = *β*<sub>0</sub> + *β*<sub>1</sub> ⋅ *x*<sub>1</sub> + *β*<sub>2</sub> ⋅ *x*<sub>2</sub>... + *β*<sub>*n*</sub> ⋅ *x*<sub>*n*</sub>
   
 Here,  
-*y* is the estimated blood pressure for patient *x*,  
+*ŷ* is the estimated blood pressure for patient *x*,  
 *β*<sub>0</sub> is the intercept (i.e., average blood pressure for
 patients when all other *β* covariates are set to 0),  
 *β*<sub>1</sub> is the first covariate in the model (treatment), and  
@@ -370,8 +370,8 @@ which is ‘left over’ when all other factors/covariates have been set to
 *y* = *β*<sub>0</sub> + *β*<sub>1</sub> ⋅ *x*<sub>1</sub> + *β*<sub>2</sub> ⋅ *x*<sub>2</sub>... + *β*<sub>*n*</sub> ⋅ *x*<sub>*n*</sub> + *ϵ*
   
 The error can not be estimated by the linear model, and must be
-calculated afterwards by subtracting the measured blood pressure from
-the estimated blood pressure for each subject.
+calculated afterwards by subtracting the estimated blood pressure from
+the measured blood pressure (i.e., *y* − *ŷ* ) for each subject.
 
 ## Residualization
 

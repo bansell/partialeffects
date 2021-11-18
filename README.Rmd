@@ -139,9 +139,9 @@ The above plot doesnt fit the above reported p value for the drug treatment (p â
 
 To do this we have to make adjustments the study data to remove the confounding effects we identified. This is called 'residualization'. The systolic blood pressure for every patient in the study is predicted based on the estimates in the linear model. In formal terms, as detailed in [moderndive chapter 5](https://moderndive.com/5-regression.html), the average blood pressure for patients in each treatment/site/machine group, is calculated by linear equation  
 
-$$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... +  \beta_{n} \cdot x_{n} $$  
+$$\hat{y} = \beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... +  \beta_{n} \cdot x_{n} $$  
 Here,   
-$y$ is the estimated blood pressure for patient $x$,   
+$\hat{y}$ is the estimated blood pressure for patient $x$,   
 $\beta_{0}$ is the intercept (i.e., average blood pressure for patients when all other $\beta$ covariates are set to 0),   
 $\beta_{1}$ is the first covariate in the model (treatment), and   
 $x_{1}$ is the treatment status for patient $x$ expressed in interger terms (0 for placebo, 1 for drug).   
@@ -178,7 +178,7 @@ _systolic = `r round(140.1    + (34.57 * 0.738  ),2)`_
 The actual measured value for Patient 1 is 172.89. The difference between the predicted and measured values (`r 172.89 - 165.61`) is the 'residual' or 'error' which is not accounted for by the current model. This is generally attributed to 'random variation' between individuals. Error is denoted __$\epsilon$__ in the formal linear model. Whereas the algebra above solves for the estimated blood pressure for each patient, to calculate the actual measured blood pressure requires adding in the random error which is 'left over' when all other factors/covariates have been set to 0: 
 
 $$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... + \beta_{n} \cdot x_{n} + \epsilon$$   
-The error can not be estimated by the linear model, and must be calculated afterwards by subtracting the measured blood pressure from the estimated blood pressure for each subject.
+The error can not be estimated by the linear model, and must be calculated afterwards by subtracting the estimated blood pressure from the measured blood pressure (i.e., $y - \hat{y}$ ) for each subject.
 
 
 ## Residualization
