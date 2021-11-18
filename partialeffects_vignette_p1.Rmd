@@ -1,7 +1,16 @@
 ---
 title: "Seeing is believing"
 subtitle: — correcting datasets for covariates to reveal effects of interest
-output: rmarkdown::github_document
+output:
+  html_notebook:
+    css: styles.css
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
 ---
 
 # Part 1 {.toc-ignore}
@@ -126,7 +135,7 @@ For scientific reporting and visual presentations we often want to show the audi
 
 We see in the multivariate model that the treatment is effective. Can we plot this result?
 
-```{r}
+```{r, out.width="40%"}
 ggplot(experimental_data_scaled, aes(x=treatment, y=systolic, col=treatment)) + 
   geom_boxplot() +
   ggpubr::stat_compare_means(ref.group = 'placebo', method = 't.test', col='red') +
