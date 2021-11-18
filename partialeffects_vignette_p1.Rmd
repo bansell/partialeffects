@@ -41,10 +41,10 @@ library(partialeffects)
 
 
 ```{r}
-experimental_data
+systolic_trial
 ```
 ```{r}
-skim(experimental_data)
+skim(systolic_trial)
 ```
 
 
@@ -56,7 +56,7 @@ For this scenario we can construct a simple linear model in R using the `lm()` f
 
 
 ```{r}
-mod <- lm(systolic ~ treatment, data = experimental_data)
+mod <- lm(systolic ~ treatment, data = systolic_trial)
 ```
 
 
@@ -86,7 +86,7 @@ To account for these possible confounds, we create a 'multivariate' linear model
 
 ```{r}
 mod_multi <- lm(systolic ~ treatment + age + site + machine, 
-                data = experimental_data)
+                data = systolic_trial)
 
 get_regression_table(mod_multi)
 ```
@@ -111,7 +111,7 @@ NB although it's bad practice to overwrite variables, we bend the rules in the c
 NBB scaling is tricky to implement in tidy R. A wrapper function `scale_this()` available [here](https://stackoverflow.com/a/35776313/5308040) could be useful if you are using this often.
 
 ```{r}
-experimental_data_scaled <- experimental_data %>% 
+systolic_trial_scaled <- systolic_trial %>% 
   mutate(age = (age-mean(age)) / sd(age)) %>% 
   print()
 ```
@@ -120,13 +120,13 @@ experimental_data_scaled <- experimental_data %>%
 Now we create a lm using the scaled covariate:
 ```{r}
 mod_scaled <- lm(systolic ~ treatment + age + site + machine,
-                 data = experimental_data_scaled)
+                 data = systolic_trial_scaled)
 
 get_regression_table(mod_scaled)
 ```
 Note that the estimates for the factors are identical. All that has changed is the intercept and the estimate for age. Now the intercept represents the average blood pressure for patients _of the average age of all study participants_ at site1, measured with machine1. This works because 0 is the average of the scaled age values, and the intercept represents the estimated blood pressure when all covariates are set to 0.  
 
-Incidentally, the average age of participants is `r mean(experimental_data$age)`, so the intercept represents the average blood pressure for patients of this age at the end of the study _correcting for all other variables_ including drug treatment.
+Incidentally, the average age of participants is `r mean(systolic_trial$age)`, so the intercept represents the average blood pressure for patients of this age at the end of the study _correcting for all other variables_ including drug treatment.
 
 
 ## Plotting the treatment effect
@@ -136,7 +136,7 @@ For scientific reporting and visual presentations we often want to show the audi
 We see in the multivariate model that the treatment is effective. Can we plot this result?
 
 ```{r, out.width="40%"}
-ggplot(experimental_data_scaled, aes(x=treatment, y=systolic, col=treatment)) + 
+ggplot(systolic_trial_scaled, aes(x=treatment, y=systolic, col=treatment)) + 
   geom_boxplot() +
   ggpubr::stat_compare_means(ref.group = 'placebo', method = 't.test', col='red') +
   geom_jitter(height=0,width=0.15)
@@ -160,7 +160,7 @@ $\beta_{2}$ and $x_{2}$ represent the model estimate and measured value for pati
 If we apply this to Patient 1 in the scaled experimental data:
 
 ```{r}
-experimental_data_scaled %>% head()
+systolic_trial_scaled %>% head()
 ```
 Patient 1 is in the placebo group at site 1, measured with machine 1. The numeric values for Patient 1 for the terms 'treatment: drug', 'site: 2','machine: 2' and 'machine: 3' , are all 0. The age of the patient is 0.73 standard units higher than the average age. To estimate the systolic pressure for patient 1, we substitute the data specific to Patient 1 the linear model as follows:
 
@@ -215,7 +215,7 @@ To calculate the partial residuals for drug treatment requires solving the linea
 
 `extract_partial()` is a function to do just this. The function is modelled on `moderndive::get_regression_points()` but further calculates partial residuals for effects of interest. 
 
-The entire `experimental_data_scaled` data is captured by the `mod_scaled` object created above. Therefore this function needs only a model object and the column name of the effect of interest:
+The entire `systolic_trial_scaled` data is captured by the `mod_scaled` object created above. Therefore this function needs only a model object and the column name of the effect of interest:
 ```{r}
 
 partial_treatment <- extract_partial(mod_scaled, 'treatment') %>% print()

@@ -32,9 +32,9 @@ tbl_sim <- tibble(
 
 
 
-experimental_data <- tbl_sim %>% mutate(treatment=ifelse(treatment==0,'placebo','drug'),
+systolic_trial <- tbl_sim %>% mutate(treatment=ifelse(treatment==0,'placebo','drug'),
                                         treatment=factor(treatment,   levels=c('placebo','drug'))) %>%
   select(-c(error,body_mass_g)) %>% mutate(age=round(age,0)) %>%
   dplyr::rename(machine=plate,site=batch)
 
-write_tsv(experimental_data,'R/inst/experimental_data.tsv')
+write_tsv(systolic_trial,'R/inst/systolic_trial.tsv')
