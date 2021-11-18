@@ -139,13 +139,13 @@ The above plot doesnt fit the above reported p value for the drug treatment (p â
 
 To do this we have to make adjustments the study data to remove the confounding effects we identified. This is called 'residualization'. The systolic blood pressure for every patient in the study is predicted based on the estimates in the linear model. In formal terms, as detailed in [moderndive chapter 5](https://moderndive.com/5-regression.html), the average blood pressure for patients in each treatment/site/machine group, is calculated by linear equation  
 
-$$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... +  \beta_{n} \cdot x_{n} $$
-Here  
-$y$ is the estimated blood pressure for patient $x$,  
-$\beta_{0}$ is the intercept (i.e., average blood pressure for patients when all other $\beta$ covariates are set to 0),  
-$\beta_{1}$ is the first covariate in the model (treatment), and  
-$x_{1}$ is the treatment status for patient $x$ expressed in interger terms (0 for placebo, 1 for drug).  
-$\beta_{2}$ and $x_{2}$ represent the model estimate and measured value for patient ${x}$ for the second term, and so on to the $n^{th}$ term.
+$$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... +  \beta_{n} \cdot x_{n} $$  
+Here,   
+$y$ is the estimated blood pressure for patient $x$,   
+$\beta_{0}$ is the intercept (i.e., average blood pressure for patients when all other $\beta$ covariates are set to 0),   
+$\beta_{1}$ is the first covariate in the model (treatment), and   
+$x_{1}$ is the treatment status for patient $x$ expressed in interger terms (0 for placebo, 1 for drug).   
+$\beta_{2}$ and $x_{2}$ represent the model estimate and measured value for patient ${x}$ for the second term, and so on to the $n^{th}$ term.  
 
 
 If we apply this to Patient 1 in the scaled experimental data:
@@ -156,28 +156,28 @@ experimental_data_scaled %>% head()
 Patient 1 is in the placebo group at site 1, measured with machine 1. The numeric values for Patient 1 for the terms 'treatment: drug', 'site: 2','machine: 2' and 'machine: 3' , are all 0. The age of the patient is 0.73 standard units higher than the average age. To estimate the systolic pressure for patient 1, we substitute the data specific to Patient 1 the linear model as follows:
 
 _systolic = intercept_  
-_+  (-14.3 \* 'treatment: drug')_  
-_+  (34.57 \* age )_  
-_+ (-44.86 \* 'site: 2') _  
-_+ (38.737 \* 'machine: 2') _  
+_+ (-14.3 \* 'treatment: drug')_  
+_+ ( 34.57 \* age )_  
+_+ (-44.86 \* 'site: 2')_  
+_+ ( 38.737 \* 'machine: 2')_  
 _+ (-0.307 \* 'machine: 3')_   
 
-which is:  
+__which is:__  
 
 _systolic = 140.1_  
-_+ (-14.3 \* 0 ) _  
-_+ ( 34.57 \* 0.738  ) _  
-_+ ( -44.86 \* 0 ) _  
-_+ ( 38.74 \* 0 ) _  
+_+ (-14.3 \* 0 )_  
+_+ ( 34.57 \* 0.738  )_  
+_+ (-44.86 \* 0 )_  
+_+ ( 38.74 \* 0 )_  
 _+ (-0.307 \* 0)_  
 
-giving:  
+__giving:__  
 
 _systolic = `r round(140.1    + (34.57 * 0.738  ),2)`_
 
-The actual measured value for Patient 1 is 172.89. The difference between the predicted and measured values (`r 172.89 - 165.61`) is the 'residual' or 'error' which is not accounted for by the current model. This is generally attributed to 'random variation' between individuals. Error is denoted $\epsilon$ in the formal linear model. Whereas the algebra above solves for the estimated blood pressure for each patient, to calculate the actual measured blood pressure requires adding in the random error which is 'left over' when all other factors/covariates have been set to 0: 
+The actual measured value for Patient 1 is 172.89. The difference between the predicted and measured values (`r 172.89 - 165.61`) is the 'residual' or 'error' which is not accounted for by the current model. This is generally attributed to 'random variation' between individuals. Error is denoted __$\epsilon$__ in the formal linear model. Whereas the algebra above solves for the estimated blood pressure for each patient, to calculate the actual measured blood pressure requires adding in the random error which is 'left over' when all other factors/covariates have been set to 0: 
 
-$$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... + \beta_{n} \cdot x_{n} + \epsilon$$
+$$y=\beta_{0} + \beta_{1} \cdot x_{1} + \beta_{2} \cdot x_{2} ... + \beta_{n} \cdot x_{n} + \epsilon$$   
 The error can not be estimated by the linear model, and must be calculated afterwards by subtracting the measured blood pressure from the estimated blood pressure for each subject.
 
 
@@ -191,7 +191,7 @@ After 'residualization', the set of adjusted measurements are called 'partial re
 In this example the effect of interest is the drug treatment. For Patient 1, we want to calculate the effect of drug treatment by solving the linear model by _adding only the intercept and treatment effects, and then adding the error_.
 Patient 1 in fact belongs to the 'intercept' group, so there are no confounding factors to be corrected. They are already set to 0 in the linear equation. However the patient's blood pressure is affected by age, and so to remove this confound from the effect of drug treatment, the residualized data for Patient 1 would be the   _intercept + residual_ (or $\beta_{0} + \epsilon$ ), which is:   
 
-partial treatment effect = _140.1 + `r 172.89 - 165.61` = `r 140.1 + (172.89 - 165.61)`_.
+Partial treatment effect = _140.1 + `r 172.89 - 165.61` = `r 140.1 + (172.89 - 165.61)`_.
 
 See how the estimated effect of age is simply dropped from the equation during this residualization process. 
 
@@ -204,12 +204,13 @@ To calculate the partial residuals for drug treatment requires solving the linea
 #source('R/extract_partial.R')
 ```
 
-`extract_partial()` is a function to do just this. The function is modelled on `moderndive::get_regression_points()` but further calculates partial residuals for effects of interest. 
+`extract_partial()` is a function to do just this. The function is modelled on `moderndive::get_regression_points()` but further calculates partial residuals (`partial_resid`) for effects of interest. 
 
 The entire `experimental_data_scaled` data is captured by the `mod_scaled` object created above. Therefore this function needs only a model object and the column name of the effect of interest:
 ```{r}
 
-partial_treatment <- extract_partial(mod_scaled, 'treatment') %>% print()
+partial_treatment <- extract_partial(mod_scaled, 'treatment') 
+print(partial_treatment %>% select(-ID))
 ```
 
 ## Plotting the _partial_ treatment effect
@@ -223,7 +224,7 @@ ggplot(partial_treatment, aes(x=treatment, y=partial_resid, col=treatment)) +
   ylab('corrected systolic')
 ```
 
-Now the summary statistics table, the plot and the displayed p value are all in agreement!  
+__Now the summary statistics table, the plot and the displayed p value are all in agreement!__
 
 This approach will scale to handle any number of covariates, and can accommodate mixed effects and generalized linear models. To see examples of plotting the progressive removal of confounding effects, and how `extract_partial()` can work for gene expression analysis, [read on](link).
 

@@ -302,7 +302,8 @@ average blood pressure for patients in each treatment/site/machine
 group, is calculated by linear equation
 
 *y* = *β*<sub>0</sub> + *β*<sub>1</sub> ⋅ *x*<sub>1</sub> + *β*<sub>2</sub> ⋅ *x*<sub>2</sub>... + *β*<sub>*n*</sub> ⋅ *x*<sub>*n*</sub>
-Here  
+  
+Here,  
 *y* is the estimated blood pressure for patient *x*,  
 *β*<sub>0</sub> is the intercept (i.e., average blood pressure for
 patients when all other *β* covariates are set to 0),  
@@ -338,21 +339,21 @@ Patient 1 the linear model as follows:
 
 *systolic = intercept*  
 *+ (-14.3 \* ‘treatment: drug’)*  
-*+ (34.57 \* age )*  
-*+ (-44.86 \* ‘site: 2’) *  
-*+ (38.737 \* ‘machine: 2’) *  
+*+ ( 34.57 \* age )*  
+*+ (-44.86 \* ‘site: 2’)*  
+*+ ( 38.737 \* ‘machine: 2’)*  
 *+ (-0.307 \* ‘machine: 3’)*
 
-which is:
+**which is:**
 
 *systolic = 140.1*  
-*+ (-14.3 \* 0 ) *  
-*+ ( 34.57 \* 0.738 ) *  
-*+ ( -44.86 \* 0 ) *  
-*+ ( 38.74 \* 0 ) *  
+*+ (-14.3 \* 0 )*  
+*+ ( 34.57 \* 0.738 )*  
+*+ (-44.86 \* 0 )*  
+*+ ( 38.74 \* 0 )*  
 *+ (-0.307 \* 0)*
 
-giving:
+**giving:**
 
 *systolic = 165.61*
 
@@ -360,12 +361,14 @@ The actual measured value for Patient 1 is 172.89. The difference
 between the predicted and measured values (7.28) is the ‘residual’ or
 ‘error’ which is not accounted for by the current model. This is
 generally attributed to ‘random variation’ between individuals. Error is
-denoted *ϵ* in the formal linear model. Whereas the algebra above solves
-for the estimated blood pressure for each patient, to calculate the
-actual measured blood pressure requires adding in the random error which
-is ‘left over’ when all other factors/covariates have been set to 0:
+denoted ***ϵ*** in the formal linear model. Whereas the algebra above
+solves for the estimated blood pressure for each patient, to calculate
+the actual measured blood pressure requires adding in the random error
+which is ‘left over’ when all other factors/covariates have been set to
+0:
 
 *y* = *β*<sub>0</sub> + *β*<sub>1</sub> ⋅ *x*<sub>1</sub> + *β*<sub>2</sub> ⋅ *x*<sub>2</sub>... + *β*<sub>*n*</sub> ⋅ *x*<sub>*n*</sub> + *ϵ*
+  
 The error can not be estimated by the linear model, and must be
 calculated afterwards by subtracting the measured blood pressure from
 the estimated blood pressure for each subject.
@@ -392,7 +395,7 @@ pressure is affected by age, and so to remove this confound from the
 effect of drug treatment, the residualized data for Patient 1 would be
 the *intercept + residual* (or *β*<sub>0</sub> + *ϵ* ), which is:
 
-partial treatment effect = *140.1 + 7.28 = 147.38*.
+Partial treatment effect = *140.1 + 7.28 = 147.38*.
 
 See how the estimated effect of age is simply dropped from the equation
 during this residualization process.
@@ -405,30 +408,31 @@ pre-calculated error, for every patient in the study.
 
 `extract_partial()` is a function to do just this. The function is
 modelled on `moderndive::get_regression_points()` but further calculates
-partial residuals for effects of interest.
+partial residuals (`partial_resid`) for effects of interest.
 
 The entire `experimental_data_scaled` data is captured by the
 `mod_scaled` object created above. Therefore this function needs only a
 model object and the column name of the effect of interest:
 
 ``` r
-partial_treatment <- extract_partial(mod_scaled, 'treatment') %>% print()
+partial_treatment <- extract_partial(mod_scaled, 'treatment') 
+print(partial_treatment %>% select(-ID))
 ```
 
-    ## # A tibble: 200 × 9
-    ##       ID systolic treatment    age site  machine systolic_hat residual
-    ##    <int>    <dbl> <fct>      <dbl> <fct> <fct>          <dbl>    <dbl>
-    ##  1     1    173.  placebo    0.738 1     1              166.     7.29 
-    ##  2     2    146.  placebo   -0.735 1     2              153.    -7.11 
-    ##  3     3     70.4 placebo   -0.665 2     1               72.3   -1.91 
-    ##  4     4    136.  placebo   -0.034 1     1              139.    -2.64 
-    ##  5     5     99.8 placebo   -0.034 2     3               93.8    6.05 
-    ##  6     6    137.  placebo    1.16  2     1              135.     1.65 
-    ##  7     7     89.6 placebo   -1.44  2     2               84.4    5.26 
-    ##  8     8     97.3 placebo    0.036 2     1               96.5    0.812
-    ##  9     9     84.9 placebo   -0.174 2     1               89.2   -4.31 
-    ## 10    10     57.3 placebo   -1.16  2     3               55.0    2.26 
-    ## # … with 190 more rows, and 1 more variable: partial_resid <dbl>
+    ## # A tibble: 200 × 8
+    ##    systolic treatment    age site  machine systolic_hat residual partial_resid
+    ##       <dbl> <fct>      <dbl> <fct> <fct>          <dbl>    <dbl>         <dbl>
+    ##  1    173.  placebo    0.738 1     1              166.     7.29           147.
+    ##  2    146.  placebo   -0.735 1     2              153.    -7.11           133.
+    ##  3     70.4 placebo   -0.665 2     1               72.3   -1.91           138.
+    ##  4    136.  placebo   -0.034 1     1              139.    -2.64           137.
+    ##  5     99.8 placebo   -0.034 2     3               93.8    6.05           146.
+    ##  6    137.  placebo    1.16  2     1              135.     1.65           142.
+    ##  7     89.6 placebo   -1.44  2     2               84.4    5.26           145.
+    ##  8     97.3 placebo    0.036 2     1               96.5    0.812          141.
+    ##  9     84.9 placebo   -0.174 2     1               89.2   -4.31           136.
+    ## 10     57.3 placebo   -1.16  2     3               55.0    2.26           142.
+    ## # … with 190 more rows
 
 ## Plotting the *partial* treatment effect
 
@@ -442,8 +446,8 @@ ggplot(partial_treatment, aes(x=treatment, y=partial_resid, col=treatment)) +
 
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-Now the summary statistics table, the plot and the displayed p value are
-all in agreement!
+**Now the summary statistics table, the plot and the displayed p value
+are all in agreement!**
 
 This approach will scale to handle any number of covariates, and can
 accommodate mixed effects and generalized linear models. To see examples
