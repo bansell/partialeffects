@@ -1,7 +1,9 @@
 Seeing is believing
 ================
 
-# Part 1
+## — correcting datasets for covariates to reveal effects of interest
+
+## Part 1
 
 Linear modelling is a widely used method for testing the effects of
 predictors on outcomes. In plain English, linear models can help us to

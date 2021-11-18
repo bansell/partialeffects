@@ -1,10 +1,12 @@
 ---
 title: "Seeing is believing"
-subtitle: — correcting datasets for covariates to reveal effects of interest
+subtitle: '— correcting datasets for covariates to reveal effects of interest'
 output: rmarkdown::github_document
 ---
 
-# Part 1 {.toc-ignore}
+## — correcting datasets for covariates to reveal effects of interest {.toc-ignore}
+
+## Part 1 {.toc-ignore}
 
 Linear modelling is a widely used method for testing the effects of predictors on outcomes. In plain English, linear models can help us to understand, for example, the effect of a drug treatment on a disease, or the effect of age on body weight, etc.  
 
